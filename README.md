@@ -11,6 +11,8 @@ This script hides the default size variant selection and replaces it with a cust
 - ✅ 2. Automatic Size Detection
     Extracts sizes from a predefined format UK [size] | EU [size] | US [size].
     Uses a robust regex pattern to capture both numeric & text-based values.
+    Products with size variants format not found → Works as usual (no interference).
+    Products with mixed formats (some missing sizes) → Shows "N/A" only where needed, otherwise retains original size.
 - ✅ 3. Prevents "Flashing" of Old Sizes
     Hides the size fieldset initially (display: none) to prevent a flash of old sizes before JavaScript updates them.
 - ✅ 4. SEO & Accessibility Friendly
