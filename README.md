@@ -68,3 +68,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+🎯 Customization
+If using Dawn Theme, update the JavaScript selector to:
+javascript
+Copy
+Edit
+const fieldset = document.querySelector('.product-form__input[name="Size"]');
+If using Debut Theme, update the JavaScript selector to:
+javascript
+Copy
+Edit
+const fieldset = document.querySelector('.product-form__variants[name="Size"]');
+🚀 Support
+If you find this useful, consider starring the repository ⭐ on GitHub!
+
