@@ -1,0 +1,21 @@
+/* Hide size variants initially to prevent flashing */
+.template-product.template-name-footwear .variant-wrapper fieldset.variant-input-wrap[name="Size"] {
+  display: none;
+  visibility: hidden;
+}
+.size-selector span {
+  cursor: pointer;
+  color: #000;
+  padding: 5px 15px;
+  margin: 4px;
+  font-size: 13px;
+  display: inline-block;
+  background-color: #f8f8f8;
+  box-shadow: 0 0 0 1px #e8e8e1;
+  border-radius: 4px;
+}
+.size-selector span.selected {
+  background-color: #000;
+  color: #fff;
+  box-shadow: 0 0 0 2px #000;
+}
