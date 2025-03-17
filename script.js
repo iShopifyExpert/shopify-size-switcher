@@ -47,6 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     updateSizeFormat('UK', document.querySelector('.size-selector span[value="UK"]'));
-    console.log("Functionality developed by Alliyan Gul");
+    console.log("Functionality developed by Alliyan Gul @ishopifyexpert");
   }
 });
