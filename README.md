@@ -41,5 +41,7 @@ If using Debut Theme, update the JavaScript selector to:
 
     const fieldset = document.querySelector('.product-form__variants[name="Size"]');
 
+![GIF Description](https://github.com/iShopifyExpert/shopify-size-switcher/blob/main/reference.gif)
+
 🚀 Support
 If you find this useful, consider starring the repository ⭐ on GitHub!
