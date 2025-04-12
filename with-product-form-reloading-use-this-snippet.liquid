@@ -1,0 +1,143 @@
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const fieldset = document.querySelector(
+    '.f8pr-variant-selection .option-name-size[name="Size"]'
+  ) || document.querySelector('.check.box');
+  const originalLabel = document.querySelector('.f8pr-variant-selection label[for^="option-template"][class*="no-js-hidden"]');
+  const originalLis = fieldset ? fieldset.querySelectorAll('li') : [];
+  if (!originalLis.length) return;
+  let atLeastOneValidSize = false;
+  originalLis.forEach(li => {
+    const span = li.querySelector('label span');
+    if (!span) return;
+    const sizeText = span.innerText.trim();
+    li.dataset.originalSizes = sizeText;
+    if (/UK [\w\s\d.\-/]+ \| EU [\w\s\d.\-/]+ \| US [\w\s\d.\-/]+/.test(sizeText)) {
+      atLeastOneValidSize = true;
+    }
+  });
+  if (!atLeastOneValidSize) return;
+  const sizeFormats = { UK: 1, EU: 2, US: 3 };
+  const sizeSelector = document.createElement('div');
+  sizeSelector.className = 'size-selector';
+  Object.keys(sizeFormats).forEach(format => {
+    const span = document.createElement('span');
+    span.textContent = format;
+    span.setAttribute('value', format);
+    span.classList.add('size-option');
+    if (format === 'UK') span.classList.add('selected');
+    span.addEventListener('click', () => updateSizeFormat(format, span));
+    sizeSelector.appendChild(span);
+  });
+  const clonedUl = document.createElement('ul');
+  clonedUl.className = 'check box mobile-scroll no-js-hidden';
+  originalLis.forEach((li, index) => {
+    const originalInput = li.querySelector('input[type="radio"]');
+    const originalLabel = li.querySelector('label');
+    const originalSpan = originalLabel ? originalLabel.querySelector('span') : null;
+    const clonedLi = document.createElement('li');
+    clonedLi.dataset.originalSizes = li.dataset.originalSizes;
+    const clonedInput = originalInput.cloneNode(true);
+    clonedInput.name = originalInput.name + '-clone';
+    clonedInput.id = originalInput.id + '-clone';
+    const clonedLabel = originalLabel.cloneNode(true);
+    clonedLabel.setAttribute('for', clonedInput.id);
+    const span = clonedLabel.querySelector('span');
+    if (span && li.dataset.originalSizes) {
+      const match = li.dataset.originalSizes.match(/UK ([\w\s\d.\-/]+) \| EU ([\w\s\d.\-/]+) \| US ([\w\s\d.\-/]+)/);
+      if (match) {
+        span.textContent = match[sizeFormats["UK"]];
+      }
+    }
+    clonedLi.addEventListener('click', () => {
+      if (!originalInput) return;
+      const wasChecked = originalInput.checked;
+      if (wasChecked) {
+        originalInput.checked = false;
+        setTimeout(() => {
+          originalInput.checked = true;
+          originalInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }, 0);
+      } else {
+        originalInput.checked = true;
+        originalInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      clonedUl.querySelectorAll('li').forEach(el => el.classList.remove('selected'));
+      clonedLi.classList.add('selected');
+    });
+    clonedLi.appendChild(clonedInput);
+    clonedLi.appendChild(clonedLabel);
+    clonedUl.appendChild(clonedLi);
+  });
+  if (fieldset) { fieldset.style.display = 'none'; }
+  const variantWrapper = document.querySelector('.f8pr-variant-selection');
+  if (variantWrapper && variantWrapper.parentNode) {
+    variantWrapper.parentNode.insertBefore(sizeSelector, variantWrapper);
+    variantWrapper.parentNode.insertBefore(clonedUl, variantWrapper);
+    if (originalLabel) {
+    const clonedLabel = originalLabel.cloneNode(true);
+    // Optional: Add a custom class to distinguish it
+    clonedLabel.classList.add('cloned-size-label');
+    variantWrapper.parentNode.insertBefore(clonedLabel, sizeSelector);
+    }
+  }
+  function updateSizeFormat(format, selectedSpan) {
+    document.querySelectorAll('.size-selector span').forEach(el => el.classList.remove('selected'));
+    selectedSpan.classList.add('selected');
+    clonedUl.querySelectorAll('li').forEach(li => {
+      const match = li.dataset.originalSizes.match(/UK ([\w\s\d.\-/]+) \| EU ([\w\s\d.\-/]+) \| US ([\w\s\d.\-/]+)/);
+      if (match) {
+        const newText = match[sizeFormats[format]];
+        const span = li.querySelector('label span');
+        if (span) span.textContent = newText;
+      }
+    });
+  }
+  updateSizeFormat('UK', sizeSelector.querySelector('[value="UK"]'));
+  originalLis.forEach((li, index) => {
+    const input = li.querySelector('input[type="radio"]');
+    if (input && input.checked) {
+      clonedUl.children[index]?.classList.add('selected');
+    }
+  });
+  // MutationObserver to re-hide only the original size list (not the cloned one)
+  const observer = new MutationObserver(() => {
+    const variantWrapper = document.querySelector('.f8pr-variant-selection');
+    const originalLabel = variantWrapper?.querySelector('label[for^="option-template"][class*="no-js-hidden"]');
+    const originalUl = variantWrapper?.querySelector('ul.check.box');
+  
+    if (originalUl && originalUl.style.display !== 'none') {
+      setTimeout(() => {
+        originalLabel.style.display = 'none';
+        originalUl.style.display = 'none';
+      }, 10);
+    }
+  });
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+});
+</script>
+<style>
+#f8pr-ul-check-2, .f8pr-variant-selection label[for^="option-template"][class*="no-js-hidden"] {
+  display:none;
+}
+.size-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.size-selector .size-option {
+  padding: 6px 12px;
+  border: 1px solid #ececec;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.size-selector .size-option.selected {
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+}
+</style>
